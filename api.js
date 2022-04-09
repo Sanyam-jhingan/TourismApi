@@ -12,6 +12,10 @@ app.listen(PORT, () => {
 
 client.connect()
 
+app.get("/" , (req, res) => {
+    res.send("Go to /states")
+})
+
 app.get("/states", (req, res) => {
   client.query("SELECT * FROM states", (err, result) => {
     if (err) {
