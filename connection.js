@@ -1,17 +1,10 @@
-const { Client } = require('pg');
-
-const USER = process.env.USER || 'postgres';
-const PASSWORD = process.env.PASSWORD || 'postgres';
-const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || 5432;
-const DATABASE = process.env.DATABASE || 'postgres';
+const { Client } = require("pg")
 
 const client = new Client({
-    user: USER,
-    host: HOST,
-    database: DATABASE,
-    password: PASSWORD,
-    port: 5432,
-});
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+})
 
-module.exports = client;
+module.exports = client
