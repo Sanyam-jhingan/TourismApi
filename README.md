@@ -15,7 +15,7 @@
 9. Now create `states` table in the database:
     ```
     CREATE TABLE states (
-        id SERIAL PRIMARY KEY,
+        state_id SERIAL PRIMARY KEY,
         name VARCHAR UNIQUE NOT NULL,
         image_url VARCHAR
     );
@@ -23,12 +23,12 @@
 10. Now create `tourist_places` table in the database:
     ```
     CREATE TABLE tourist_places (
-        id SERIAL PRIMARY KEY,
+        place_id SERIAL PRIMARY KEY,
         state_id INTEGER,
         name VARCHAR UNIQUE NOT NULL,
         description VARCHAR NOT NULL,
         image_url VARCHAR,
-        FOREIGN KEY (state_id) REFERENCES states(id) on delete cascade
+        FOREIGN KEY (state_id) REFERENCES states(state_id) on delete cascade
     );
     ```
 11. Run `\q` to exit the database.
