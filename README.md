@@ -16,7 +16,8 @@
     ```
     CREATE TABLE states (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(100) UNIQUE NOT NULL,
+        name VARCHAR UNIQUE NOT NULL,
+        image_url VARCHAR
     );
     ```
 10. Now create `tourist_places` table in the database:
@@ -26,6 +27,7 @@
         state_id INTEGER,
         name VARCHAR UNIQUE NOT NULL,
         description VARCHAR NOT NULL,
+        image_url VARCHAR,
         FOREIGN KEY (state_id) REFERENCES states(id) on delete cascade
     );
     ```
