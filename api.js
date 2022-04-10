@@ -133,7 +133,7 @@ app.post("/states", (req, res) => {
 })
 
 app.put("/states/:state_id", (req, res) => {
-  const id = req.params.id
+  const state_id = req.params.state_id
   const { name, image_url } = req.body
   client.query(
     `UPDATE states SET name = '${name}', image_url = '${image_url}' WHERE state_id = ${state_id}`,
