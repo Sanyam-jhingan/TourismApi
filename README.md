@@ -29,6 +29,7 @@
         FOREIGN KEY (state_id) REFERENCES states(id) on delete cascade
     );
     ```
+11. Run `\q` to exit the database.
 11. Now use the api to add some data to the database.
 12. ???
 13. Profit!
