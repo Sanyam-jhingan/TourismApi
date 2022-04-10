@@ -27,7 +27,35 @@ app.get("/states", (req, res) => {
   })
 })
 
-app.get("/states/:state_id", (req, res) => {
+
+app.get("/states/:id", (req, res) => {
+  client.query(
+    `SELECT * FROM states WHERE id = ${req.params.id}`,
+    (err, result) => {
+      if(err){
+        console.log(err)
+        res.sendStatus(500)
+      } else if (result.rows.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.send(result.rows)
+      }
+    }
+    )
+  })
+  
+  app.get("/places", (req, res) => {
+    client.query("SELECT * FROM tourist_places", (err, result) => {
+      if (err) {
+        console.log(err)
+        res.sendStatus(500)
+      } else {
+        res.send(result.rows)
+      }
+    })
+  })
+  
+  app.get("/states/:state_id/places", (req, res) => {
   client.query(
     `SELECT * FROM tourist_places WHERE state_id = ${req.params.state_id}`,
     (err, result) => {
@@ -43,7 +71,7 @@ app.get("/states/:state_id", (req, res) => {
   )
 })
 
-app.get("/states/:state_id/:tourist_place_id", (req, res) => {
+app.get("/states/:state_id/places/:tourist_place_id", (req, res) => {
   client.query(
     `SELECT * FROM tourist_places WHERE state_id = ${req.params.state_id} AND id = ${req.params.tourist_place_id}`,
     (err, result) => {
@@ -59,7 +87,23 @@ app.get("/states/:state_id/:tourist_place_id", (req, res) => {
   )
 })
 
-app.post("/states/:state_id", (req, res) => {
+app.get("/places/:id", (req, res) => {
+  client.query(
+    `SELECT * FROM tourist_places WHERE id = ${req.params.id}`,
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.sendStatus(500)
+      } else if (result.rows.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.send(result.rows)
+      }
+    }
+  )
+})
+
+app.post("/states/:state_id/places", (req, res) => {
   client.query(
     `INSERT INTO tourist_places (name, description, state_id) VALUES ('${req.body.name}', '${req.body.description}', ${req.params.state_id})`,
     (err, result) => {
@@ -106,7 +150,7 @@ app.put("/states/:id", (req, res) => {
   )
 })
 
-app.put("/states/:state_id/:tourist_place_id", (req, res) => {
+app.put("/states/:state_id/places/:tourist_place_id", (req, res) => {
   const state_id = req.params.state_id
   const tourist_place_id = req.params.tourist_place_id
   const name = req.body["name"]
@@ -140,11 +184,27 @@ app.delete("/states/:id", (req, res) => {
   })
 })
 
-app.delete("/states/:state_id/:tourist_place_id", (req, res) => {
+app.delete("/states/:state_id/places/:tourist_place_id", (req, res) => {
   const state_id = req.params.state_id
   const tourist_place_id = req.params.tourist_place_id
   client.query(
     `DELETE FROM tourist_places WHERE state_id = ${state_id} AND id = ${tourist_place_id}`,
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.sendStatus(500)
+      } else if (result.rowCount === 0) {
+        res.sendStatus(404)
+      } else {
+        res.send("Deleted")
+      }
+    }
+  )
+})
+
+app.delete("/places/:id", (req, res) => {
+  client.query(
+    `DELETE FROM tourist_places WHERE id = ${req.params.id}`,
     (err, result) => {
       if (err) {
         console.log(err)
