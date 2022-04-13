@@ -6,23 +6,32 @@ const app = express()
 app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
+  const corsWhiteList = [
+    "http://localhost:3000",
+    //add your domain here
+  ]
 
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  if (corsWhiteList.indexOf(req.headers.origin) !== -1) {
+    // Website you wish to allow to connect
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin)
 
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    // Request methods you wish to allow
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
 
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    // Request headers you wish to allow
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,content-type"
+    )
 
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  //res.setHeader('Access-Control-Allow-Credentials', true);
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    //res.setHeader('Access-Control-Allow-Credentials', true);
 
-  // Pass to next layer of middleware
-  next();
-});
+    // Pass to next layer of middleware
+  }
+  next()
+})
 
 const PORT = process.env.PORT || 3300
 app.listen(PORT, () => {
@@ -31,8 +40,8 @@ app.listen(PORT, () => {
 
 client.connect()
 
-app.get("/" , (req, res) => {
-    res.send("Go to /states")
+app.get("/", (req, res) => {
+  res.send("Go to /states")
 })
 
 app.get("/states", (req, res) => {
@@ -46,12 +55,11 @@ app.get("/states", (req, res) => {
   })
 })
 
-
 app.get("/states/:state_id", (req, res) => {
   client.query(
     `SELECT * FROM states WHERE state_id = ${req.params.state_id}`,
     (err, result) => {
-      if(err){
+      if (err) {
         console.log(err)
         res.sendStatus(500)
       } else if (result.rows.length === 0) {
@@ -60,21 +68,21 @@ app.get("/states/:state_id", (req, res) => {
         res.send(result.rows)
       }
     }
-    )
+  )
+})
+
+app.get("/places", (req, res) => {
+  client.query("SELECT * FROM tourist_places", (err, result) => {
+    if (err) {
+      console.log(err)
+      res.sendStatus(500)
+    } else {
+      res.send(result.rows)
+    }
   })
-  
-  app.get("/places", (req, res) => {
-    client.query("SELECT * FROM tourist_places", (err, result) => {
-      if (err) {
-        console.log(err)
-        res.sendStatus(500)
-      } else {
-        res.send(result.rows)
-      }
-    })
-  })
-  
-  app.get("/states/:state_id/places", (req, res) => {
+})
+
+app.get("/states/:state_id/places", (req, res) => {
   client.query(
     `SELECT * FROM tourist_places WHERE state_id = ${req.params.state_id}`,
     (err, result) => {
@@ -190,16 +198,19 @@ app.put("/states/:state_id/places/:tourist_place_id", (req, res) => {
 
 app.delete("/states/:state_id", (req, res) => {
   const state_id = req.params.state_id
-  client.query(`DELETE FROM states WHERE state_id = ${state_id}`, (err, result) => {
-    if (err) {
-      console.log(err)
-      res.sendStatus(500)
-    } else if (result.rowCount === 0) {
-      res.sendStatus(404)
-    } else {
-      res.send("Deleted")
+  client.query(
+    `DELETE FROM states WHERE state_id = ${state_id}`,
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.sendStatus(500)
+      } else if (result.rowCount === 0) {
+        res.sendStatus(404)
+      } else {
+        res.send("Deleted")
+      }
     }
-  })
+  )
 })
 
 app.delete("/states/:state_id/places/:tourist_place_id", (req, res) => {
